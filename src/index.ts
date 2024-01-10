@@ -1,8 +1,7 @@
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
+import express from "express";
 import AppDataSource from "./database/app-data-source";
-
-dotenv.config();
+import apiRouter from "./routes/api";
 
 AppDataSource.initialize()
   .then(() => {
@@ -16,6 +15,8 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+app.use(apiRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -1,0 +1,3 @@
+- `npm run migrations:run` to set up your db
+- `npm run build` to compile the project
+- `npm run start` to start the server

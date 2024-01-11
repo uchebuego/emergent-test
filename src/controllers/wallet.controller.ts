@@ -9,8 +9,15 @@ export default new (class WalletController {
   async makeWallet(req: Request, res: Response) {
     const newWallet = new Wallet();
 
-    newWallet.safePin = await bcrypt.hash(req.body.wallet_pin, 10);
-    await newWallet.save();
+    try {
+      newWallet.safePin = await bcrypt.hash(req.body.walletPin, 10);
+      await newWallet.save();
+    } catch (e) {
+      console.log("error: ", e);
+      return res
+        .status(500)
+        .json({ error: "operation failed, try again later" });
+    }
 
     const { safePin: safe_pin, ...walletData } = newWallet;
 
@@ -18,14 +25,20 @@ export default new (class WalletController {
   }
 
   async getWallets(req: Request, res: Response) {
-    const wallets = await Wallet.find();
+    try {
+      const wallets = await Wallet.find();
+      const walletsData = wallets.map((wallet) => {
+        const { safePin: safe_pin, ...walletData } = wallet;
+        return walletData;
+      });
 
-    const walletsData = wallets.map((wallet) => {
-      const { safePin: safe_pin, ...walletData } = wallet;
-      return walletData;
-    });
-
-    res.status(201).json({ wallets: walletsData });
+      res.status(201).json({ wallets: walletsData });
+    } catch (e) {
+      console.log("error: ", e);
+      return res
+        .status(500)
+        .json({ error: "operation failed, try again later" });
+    }
   }
 
   async walletTransfer(req: Request, res: Response) {

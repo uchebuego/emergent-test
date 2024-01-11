@@ -7,6 +7,46 @@ servers:
   - url: http://api.example.com/v1
     description: Main (production) server deployed to DigitalOcean
 paths:
+  /wallet:             
+    post:
+      summary: Create a new Wallet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - walletPin
+              properties:
+                walletPin:
+                  type: string
+                  pattern: '^[0-9]{4}$'
+      responses:
+        '201':
+          description: "Wallet created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wallet:
+                    type: object
+                    properties:
+                      accountNumber:
+                        type: string
+                        pattern: '^[0-9]{10}$'
+                      id:
+                        type: string
+                        format: uuid
+                      balance:
+                        type: integer
+              example:
+                wallet:
+                  accountNumber: "0095778099"
+                  id: "bf310dca-f402-4302-94e8-e8b58a655b5f"
+                  balance: 0
+    
   /wallet/all:
     get:
       summary: Returns a list of all wallets, their balances, and transaction history
@@ -28,10 +68,22 @@ paths:
                           format: uuid
                         accountNumber:
                           type: string
+                          pattern: '^[0-9]{10}$'
                         balance:
                           type: integer
                         transactions:
                           type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              amount:
+                                type: integer
+                              timestamp:
+                                type: string
+                                format: date-time
               example:
                 wallets:
                   - id: "9eeb797c-2861-46b5-9a9f-64c54244a091"
@@ -62,6 +114,10 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - "receiverAccount"
+                - "amount"
+                - "walletPin"
               properties:
                 receiverAccount:
                   type: string

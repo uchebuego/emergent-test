@@ -9,8 +9,8 @@ router.get("/wallet/all", walletController.getWallets);
 
 router.post("/wallet/:senderAccount/transfer", walletController.walletTransfer);
 
-router.post("/wallet/:accountNumber/withdraw", walletController.makeWallet);
+router.post("/wallet/:accountNumber/withdraw", walletController.doWithdrawal);
 
-router.post("/wallet/:accountNumber/deposit", walletController.makeWallet);
+router.post("/wallet/:accountNumber/deposit", walletController.doDeposit);
 
 export default router;

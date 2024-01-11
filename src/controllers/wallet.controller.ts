@@ -95,4 +95,8 @@ export default new (class WalletController {
       res.status(400).json({ error: "Transfer failed" });
     });
   }
+
+  doDeposit(req: Request, res: Response) {}
+
+  doWithdrawal(req: Request, res: Response) {}
 })();

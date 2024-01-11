@@ -25,7 +25,7 @@ export default new (class WalletController {
       return walletData;
     });
 
-    res.send({ wallets: walletsData });
+    res.status(201).json({ wallets: walletsData });
   }
 
   async walletTransfer(req: Request, res: Response) {
@@ -57,8 +57,6 @@ export default new (class WalletController {
       if (!receiverWallet) {
         return res.status(400).json({ error: "Invalid receiver" });
       }
-
-      console.log({ bal: senderWallet, transferAmount });
 
       if (senderWallet.balance < transferAmount) {
         return res.status(400).json({ error: "Insufficient Wallet Balance" });

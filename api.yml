@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: Emergent Labs Test
+  description: Simple Wallet System
+  version: 0.0.1
+servers:
+  - url: http://api.example.com/v1
+    description: Main (production) server deployed to DigitalOcean
+paths:
+  /wallet/all:
+    get:
+      summary: Returns a list of all wallets, their balances, and transaction history
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wallets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        accountNumber:
+                          type: string
+                        balance:
+                          type: integer
+                        transactions:
+                          type: array
+              example:
+                wallets:
+                  - id: "9eeb797c-2861-46b5-9a9f-64c54244a091"
+                    accountNumber: "0454683543"
+                    balance: 9000
+                    transactions:
+                      - id: "f06f6cd5-1d6a-4ec5-8781-3f2339437a27"
+                        amount: 1000
+                        timestamp: "2024-01-10T16:35:41.000Z"
+                  - id: "d10e4637-c46e-4099-9731-2b9b7f748f75"
+                    accountNumber: "0082483771"
+                    balance: 0
+                    transactions: []
+  /wallet/{senderAccount}/transfer:             
+    post:
+      summary: Transfer to another Wallet
+      parameters:
+        - name: senderAccount
+          in: path
+          required: true
+          description: Account number of the wallet to send from
+          schema:
+            type : string
+            pattern: '^[0-9]{10}$'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiverAccount:
+                  type: string
+                  description: Account number of the wallet to send to
+                  pattern: '^[0-9]{10}$'
+                amount:
+                  type: integer
+                  description: Amount in Kobo to transfer
+                  minimum: 0
+                walletPin:
+                  type: string
+                  description: Transaction PIN of the sender wallet
+                  pattern: '^[0-9]{4}$' 
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Transfer successful"
+
+    
